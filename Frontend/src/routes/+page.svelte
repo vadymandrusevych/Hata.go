@@ -6,7 +6,7 @@
 
 	<div id="nav-menu" class= "flex justify-between flex-row h-auto w-full font-bold bg-blue-300 p-6 content-center" >
 		<div id="Header" class="text-7xl h-auto w-auto text overflow-hidden min-w-0 content-center "  >
-			<a class="block truncate w-full text-center allign-middle" href={resolve('/')}>
+			<a class=" truncate w-full text-center inline-block allign-middle" href={resolve('/')}>
 				HATA.GO
 			</a>
 		</div>
