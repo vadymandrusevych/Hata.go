@@ -25,7 +25,7 @@
 				</div>
 				<div class="text-center object-center ">
 					<div>CITY</div>
-				<input class="min-w-60 max-w-60 mx-50" type="text" name="City">
+				<input class="min-w-60 max-w-60 mx-50" type="text" value placeholder="City">
 				</div>
 				<div class="mx-50 min-w-60 max-w-60"> afafsf</div>
 			</div>
