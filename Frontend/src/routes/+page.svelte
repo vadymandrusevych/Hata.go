@@ -1,11 +1,36 @@
 <script lang="ts">
 	let minValue: number = $state(0);
 	let maxValue: number = $state(1);
+	let minPrice: number = $state(0);
+	let maxPrice: number = $state(1000);
+	const maxPossiblePrice: number = $state(1000);
+	const minPossiblePrice: number = $state(0);
 	const nice = (d: number) => {
 		if (!d && d !== 0) return '';
 		return d.toFixed()
 	};
+function PriceToSlider(price: number) {
+	return (price - minPrice) / (maxPrice - minPrice);
+}
+function SliderToPrice(value: number) {
+	return minPrice+value * (maxPrice - minPrice);
+}
+function clamp(value: number, min: number, max: number) {
+	return Math.min(Math.max(value, min), max);
+}
+function updateMinPriceFromInput() {
+	minPrice = clamp(minPrice, maxPrice, minPossiblePrice);
+	minValue = PriceToSlider(minPrice);
+}
+function updateMaxPriceFromInput() {
+	maxPrice = clamp(maxValue, minPrice, maxPossiblePrice);
+	maxValue = PriceToSlider(maxPrice);
+}
 
+	$effect(() => {
+		minPrice=Math.round(SliderToPrice(minValue));
+		maxPrice=Math.round(SliderToPrice(maxValue));
+	});
 	import DoubleRangeSlider from '$lib/components/doublerange slider/DoubleRangeSlider.svelte';
 </script>
 <div id="Text" class="flex flex-row items-center justify-center  text-center text-7xl font-bold h-auto px-10 rounded-xl ">
@@ -18,7 +43,7 @@
 				<DoubleRangeSlider bind:minValue bind:maxValue />
 				<div class="flex flex-row justify-between">
 					<div>{nice(minValue*1000)}</div>
-						<input type="number" class="w-max-10" bind:value={minValue} min="0" max="100" />
+						<input type="number" id="InputMinValue" bind:value={minPrice} oninput ={updateMinPriceFromInput} min="0" max="100" />
 						<div>-</div>
 						<div>{nice(maxValue*1000)}</div>
 					</div>
