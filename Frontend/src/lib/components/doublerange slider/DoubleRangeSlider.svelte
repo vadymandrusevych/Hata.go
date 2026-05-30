@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { clamp } from 'yootils';
 
-	let { minValue = $bindable(), maxValue = $bindable() }: { minValue: number; maxValue: number } =
+	let { minSliderInput = $bindable(), maxSliderInput = $bindable() }: { minSliderInput: number; maxSliderInput: number } =
 		$props();
 	let leftHandle: HTMLDivElement;
 	let body: HTMLDivElement;
@@ -66,11 +66,11 @@
 			const parentWidth = right - left;
 			const p = Math.min(Math.max((detail.x - left) / parentWidth, 0), 1);
 			if (which === 'start') {
-				minValue = p;
-				maxValue = Math.max(maxValue, p);
+				minSliderInput = p;
+				maxSliderInput = Math.max(maxSliderInput, p);
 			} else {
-				minValue = Math.min(p, minValue);
-				maxValue = p;
+				minSliderInput = Math.min(p, minSliderInput);
+				maxSliderInput = p;
 			}
 		};
 	}
@@ -83,8 +83,8 @@
 		const pxEnd = clamp(pxStart + width, width, parentWidth);
 		const pStart = pxStart / parentWidth;
 		const pEnd = pxEnd / parentWidth;
-		minValue = pStart;
-		maxValue = pEnd;
+		minSliderInput = pStart;
+		maxSliderInput = pEnd;
 	}
 </script>
 
@@ -95,8 +95,8 @@
 			bind:this={body}
 			use:draggable={{ ondragmove: setHandlesFromBody }}
 			style="
-				left: {100 * minValue}%;
-				right: {100 * (1 - maxValue)}%;
+				left: {100 * minSliderInput}%;
+				right: {100 * (1 - maxSliderInput)}%;
 			"
 		></div>
 		<div
@@ -105,14 +105,14 @@
 			data-which="start"
 			use:draggable={{ ondragmove: setHandlePosition('start') }}
 			style="
-				left: {100 * minValue}%"
+				left: {100 * minSliderInput}%"
 		></div>
 		<div
 			class="handle"
 			data-which="end"
 			use:draggable={{ ondragmove: setHandlePosition('end') }}
 			style="
-				left: {100 * maxValue}%
+				left: {100 * maxSliderInput}%
 			"
 		></div>
 	</div>
