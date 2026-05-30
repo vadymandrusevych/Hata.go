@@ -1,0 +1,5 @@
+packages:
+  - 'Frontend'
+
+allowBuilds:
+  unrs-resolver: true

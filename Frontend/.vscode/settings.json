@@ -1,5 +1,26 @@
 {
 	"files.associations": {
 		"*.css": "tailwindcss"
-	}
+	},
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	},
+	"eslint.validate": ["javascript", "typescript", "svelte"],
+	"[svelte]": {
+		"editor.defaultFormatter": "svelte.svelte-vscode"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"tailwindCSS.experimental.classRegex": [
+		["class:list=\\{([^}]*)\\}", "[\"'`]([^\"'`]*).*?[\"'`]"]
+	]
 }

@@ -12,7 +12,7 @@
 			ondragstart?: (detail: { x: number; y: number }) => void;
 			ondragmove?: (detail: { x: number; y: number; dx: number; dy: number }) => void;
 			ondragend?: (detail: { x: number; y: number }) => void;
-		}
+		},
 	) {
 		let x: number;
 		let y: number;
@@ -57,7 +57,7 @@
 			destroy() {
 				node.removeEventListener('mousedown', handleMousedown);
 				node.removeEventListener('touchstart', handleMousedown);
-			}
+			},
 		};
 	}
 	function setHandlePosition(which: 'start' | 'end') {
@@ -88,10 +88,13 @@
 	}
 </script>
 
-<div class="w-full h-5 select-none box-border whitespace-nowrap">
-	<div class="relative w-full h-1.5 top-1/2 translate-x-0 translate-y-1/2 bg-yellow-200 shadow-[0_7px_10px_-5px_rgba(74,74,74,1.0)] shadow-[0_-1px_0px_0px_rgba(156,156,156,1.0) rounded-xs" bind:this={slider}>
+<div class="box-border h-5 w-full whitespace-nowrap select-none">
+	<div
+		class="shadow-[0_-1px_0px_0px_rgba(156,156,156,1.0) relative top-1/2 h-1.5 w-full translate-x-0 translate-y-1/2 rounded-xs bg-yellow-200 shadow-[0_7px_10px_-5px_rgba(74,74,74,1.0)]"
+		bind:this={slider}
+	>
 		<div
-			class="top-0 absolute bg-yellow-300 bottom-0"
+			class="absolute top-0 bottom-0 bg-yellow-300"
 			bind:this={body}
 			use:draggable={{ ondragmove: setHandlesFromBody }}
 			style="
@@ -140,4 +143,4 @@
 		background-color: #ddd;
 		z-index: 9;
 	}
-	</style>
+</style>

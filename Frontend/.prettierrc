@@ -1,23 +1,26 @@
 {
-  "semi": true,
-  "useTabs": true,
-  "singleQuote": true,
-  "trailingComma": "all",
-  "printWidth": 80,
-  "tabWidth": 4,
-  "bracketSpacing": true,
-  "arrowParens": "always",
-  "plugins": [
-    "prettier-plugin-svelte",
-    "prettier-plugin-tailwindcss"
-  ],
-  "overrides": [
-    {
-      "files": "*.svelte",
-      "options": {
-        "parser": "svelte"
-      }
-    }
-  ],
-  "tailwindStylesheet": "./src/routes/layout.css"
+	"semi": true,
+	"useTabs": true,
+	"singleQuote": true,
+	"trailingComma": "all",
+	"printWidth": 100,
+	"tabWidth": 4,
+	"bracketSpacing": true,
+	"bracketSameLine": false,
+	"arrowParens": "always",
+	"endOfLine": "lf",
+	"htmlWhitespaceSensitivity": "ignore",
+	"embeddedLanguageFormatting": "auto",
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte",
+				"svelteSortOrder": "options-scripts-markup-styles",
+				"svelteAllowShorthand": true
+			}
+		}
+	],
+	"tailwindStylesheet": "./src/routes/layout.css"
 }
