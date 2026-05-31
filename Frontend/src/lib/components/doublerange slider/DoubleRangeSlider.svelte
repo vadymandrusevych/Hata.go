@@ -1,12 +1,24 @@
 <script lang="ts">
-	let {
-		minSliderInput = $bindable(),
-		maxSliderInput = $bindable(),
-	}: { minSliderInput: number; maxSliderInput: number } = $props();
+	type Props = {
+		minPos: number;
+		maxPos: number;
+		onChange: (newMin: number, newMax: number) => void;
+	};
+	const { minPos, maxPos, onChange }: Props = $props();
+
 	const clamp = (n: number, lo: number, hi: number) => Math.min(Math.max(n, lo), hi);
+
 	let leftHandle: HTMLDivElement;
 	let body: HTMLDivElement;
 	let slider: HTMLDivElement;
+
+	function getPoint(event: TouchEvent | MouseEvent) {
+		if ('touches' in event) {
+			return event.touches[0] ?? event.changedTouches[0];
+		}
+		return event;
+	}
+
 	function draggable(
 		node: HTMLElement,
 		callbacks: {
@@ -19,19 +31,20 @@
 		let y: number;
 
 		function handleMousedown(event: TouchEvent | MouseEvent) {
-			const e = event instanceof TouchEvent ? event.touches[0] : event;
+			const e = getPoint(event);
 			x = e.clientX;
 			y = e.clientY;
 			callbacks.ondragstart?.({ x, y });
 
 			window.addEventListener('mousemove', handleMousemove);
 			window.addEventListener('mouseup', handleMouseup);
-			window.addEventListener('touchmove', handleMousemove);
+			window.addEventListener('touchmove', handleMousemove, { passive: false });
 			window.addEventListener('touchend', handleMouseup);
 		}
 
 		function handleMousemove(event: TouchEvent | MouseEvent) {
-			const e = event instanceof TouchEvent ? event.touches[0] : event;
+			if ('touches' in event) event.preventDefault();
+			const e = getPoint(event);
 			const dx = e.clientX - x;
 			const dy = e.clientY - y;
 			x = e.clientX;
@@ -40,7 +53,7 @@
 		}
 
 		function handleMouseup(event: TouchEvent | MouseEvent) {
-			const e = event instanceof TouchEvent ? event.touches[0] : event;
+			const e = getPoint(event);
 			x = e.clientX;
 			y = e.clientY;
 			callbacks.ondragend?.({ x, y });
@@ -58,66 +71,60 @@
 			destroy() {
 				node.removeEventListener('mousedown', handleMousedown);
 				node.removeEventListener('touchstart', handleMousedown);
+				window.removeEventListener('mousemove', handleMousemove);
+				window.removeEventListener('mouseup', handleMouseup);
+				window.removeEventListener('touchmove', handleMousemove);
+				window.removeEventListener('touchend', handleMouseup);
 			},
 		};
 	}
+
 	function setHandlePosition(which: 'start' | 'end') {
-		return function (detail: { x: number; y: number; dx: number; dy: number }) {
+		return (detail: { x: number }) => {
 			const { left, right } = slider.getBoundingClientRect();
-			const parentWidth = right - left;
-			const p = Math.min(Math.max((detail.x - left) / parentWidth, 0), 1);
+			const p = clamp((detail.x - left) / (right - left), 0, 1);
 			if (which === 'start') {
-				minSliderInput = p;
-				maxSliderInput = Math.max(maxSliderInput, p);
+				onChange(p, Math.max(maxPos, p));
 			} else {
-				minSliderInput = Math.min(p, minSliderInput);
-				maxSliderInput = p;
+				onChange(Math.min(p, minPos), p);
 			}
 		};
 	}
-	function setHandlesFromBody(detail: { x: number; y: number; dx: number; dy: number }) {
+
+	function setHandlesFromBody(detail: { dx: number }) {
 		const { width } = body.getBoundingClientRect();
 		const { left, right } = slider.getBoundingClientRect();
 		const parentWidth = right - left;
 		const leftHandleLeft = leftHandle.getBoundingClientRect().left;
 		const pxStart = clamp(leftHandleLeft + detail.dx - left, 0, parentWidth - width);
 		const pxEnd = clamp(pxStart + width, width, parentWidth);
-		const pStart = pxStart / parentWidth;
-		const pEnd = pxEnd / parentWidth;
-		minSliderInput = pStart;
-		maxSliderInput = pEnd;
+		onChange(pxStart / parentWidth, pxEnd / parentWidth);
 	}
 </script>
 
-<div class="box-border h-5 w-full whitespace-nowrap select-none">
+<div class="box-border h-5 w-full select-none">
 	<div
-		class="shadow-[0_-1px_0px_0px_rgba(156,156,156,1.0) relative top-1/2 h-1.5 w-full translate-x-0 translate-y-1/2 rounded-xs bg-yellow-200 shadow-[0_7px_10px_-5px_rgba(74,74,74,1.0)]"
+		class="relative top-1/2 h-1.5 w-full translate-y-1/2 rounded-xs bg-yellow-200 shadow-[0_7px_10px_-5px_rgba(74,74,74,1.0)]"
 		bind:this={slider}
 	>
 		<div
 			class="absolute top-0 bottom-0 bg-yellow-300"
 			bind:this={body}
 			use:draggable={{ ondragmove: setHandlesFromBody }}
-			style="
-				left: {100 * minSliderInput}%;
-				right: {100 * (1 - maxSliderInput)}%;
-			"
+			style="left: {100 * minPos}%; right: {100 * (1 - maxPos)}%;"
 		></div>
 		<div
 			class="handle"
 			bind:this={leftHandle}
 			data-which="start"
 			use:draggable={{ ondragmove: setHandlePosition('start') }}
-			style="
-				left: {100 * minSliderInput}%"
+			style="left: {100 * minPos}%"
 		></div>
 		<div
 			class="handle"
 			data-which="end"
 			use:draggable={{ ondragmove: setHandlePosition('end') }}
-			style="
-				left: {100 * maxSliderInput}%
-			"
+			style="left: {100 * maxPos}%"
 		></div>
 	</div>
 </div>
